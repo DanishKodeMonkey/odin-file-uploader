@@ -1,12 +1,18 @@
 require('dotenv').config();
 
+// Packages
 const express = require('express');
 const session = require('express-session');
-const passport = require('./config/passport');
+const path = require('path');
+// Configs
+const passport = require('./src/config/passport');
+
+// Routers
+const indexRouter = require('./src/routers/indexRouter');
 
 const app = express();
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'src', 'views'));
 app.set('view engine', 'ejs');
 
 app.use(express.json());
@@ -27,20 +33,30 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/', (req, res) => res.render('index'));
+app.use('/', indexRouter);
 
 // Catch all route handler if nothing else matches.
 app.use((req, res, next) => {
-    res.status(404).render('404', { message: 'Page Not Found' });
+    res.status(404).render('errorPage', {
+        user: res.locals.currentUser,
+        err: {
+            status: 404,
+            title: 'Not Found',
+            message: 'The page you are looking for does not exist',
+        },
+        description: 'Page not found',
+        title: 'Page not found',
+    });
 });
 
 // Generic error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack); // parse error
-    const statusCode = err.status || 500; // set status code
-
-    res.status(statusCode).json({
-        message: err.message || 'Internal Server Error (500)',
+    res.status(err.status || 500).render('errorPage', {
+        user: res.locals.currentUser,
+        err: err,
+        description: 'An error occured while processing your request',
+        title: 'Error Page',
     });
 });
 
