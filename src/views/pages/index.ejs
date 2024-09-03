@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../partials/head') %>
+    <body>
+        <%- include('../partials/header') %>
+        <h1>Welcome <%= user ? user.username : 'Guest' %>!</h1>
+        <p>This is the home section of the file uploader</p>
+        <p>Feel free to have a glimpse at the files that have been uploaded</p>
+        <p>
+            To upload, <a href="/login">log in</a> or
+            <a href="/sign-up">sign up</a> today!
+        </p>
+        <%- include('../partials/footer.ejs') %>
+    </body>
+</html>
