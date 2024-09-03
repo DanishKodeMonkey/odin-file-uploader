@@ -2,6 +2,12 @@
 
 WIP
 
+TODO NEXT/
+Establish router/controller file structure e.g routers/userRouter.js controllers/userController.js
+User sign up and sign in views with logic in controllers/userController.js
+
+etc.
+
 ```
 /project-root
 │
@@ -17,7 +23,13 @@ WIP
 │   │   └── prismaQueries.js    // Prisma Query functions
 │   ├── /views                  // EJS templates for rendering views
 │   ├── app.js                  // Main application file
-│
+├── views/                      // EJS views
+│   ├── partials/               // reusable Partials included in main pages like headers and footers
+│   │   │── head.ejs            // HTML head meta data
+│   │   ├── header.ejs          // header, including nav-bar
+│   │   ├── footer.ejs          // footer, including contact info.
+│   ├── pages/                  // main pages
+│   │   ├── index.ejs           // index/home view
 ├── .env                        // Environment variables
 ├── .gitignore                  // Git ignore rules
 ├── package-lock.json           // Locks the versions of dependencies
