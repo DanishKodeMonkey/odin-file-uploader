@@ -2,12 +2,6 @@
 
 WIP
 
-TODO NEXT/
-Establish router/controller file structure e.g routers/userRouter.js controllers/userController.js
-User sign up and sign in views with logic in controllers/userController.js
-
-etc.
-
 ```
 /project-root
 │
