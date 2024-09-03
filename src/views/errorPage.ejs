@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('partials/head.ejs') %>
+    <body>
+        <%- include('partials/header') %>
+        <div>
+            <h1><%= err.status || '500'%> - <%= err.title || 'Internal Server error'%></h1>
+            <p><%= err.message || 'Something went wrong, please try again'%></p>
+            <p><a href="/">Back to Home</a></p>
+        </div>
+        <%- include('partials/footer.ejs') %>
+    </body>
+</html>
