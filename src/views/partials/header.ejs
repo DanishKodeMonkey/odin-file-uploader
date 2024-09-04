@@ -3,10 +3,11 @@
         <ul>
             <li><a href="/">Home</a></li>
             <% if (user) { %>
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <li><a href="/user/profile">Profile</a></li>
+            <li><a href="/user/logout">Logout</a></li>
             <% } else {%>
-            <li><a href="/login">Login</a></li>
+            <li><a href="/user/login">Login</a></li>
+            <li><a href="/user/sign-up">Sign-up</a></li>
             <% } %>
         </ul>
     </nav>
