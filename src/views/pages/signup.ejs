@@ -3,7 +3,8 @@
 <%- include('../partials/head.ejs') %>
 <body>
     <%- include('../partials/header.ejs') %>
-    <div><form action="/sign-up" method="post">
+    <%- include('../partials/error.ejs', { errors: errors}) %>
+    <div><form action="/user/sign-up" method="post">
         <label for="username">Username:</label>
         <input type="text" name="username" id="username">
         <label for="email">Email:</label>
