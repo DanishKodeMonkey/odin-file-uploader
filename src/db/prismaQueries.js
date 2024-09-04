@@ -1,9 +1,10 @@
 const prisma = require('./prismaClient');
+const bcrypt = require('bcryptjs');
 
 const userQueries = {
     getUserById: async (userId) => {
         try {
-            const user = await prisma.user.findUnique({
+            const user = await prisma.users.findUnique({
                 where: { id: userId },
             });
 
@@ -18,7 +19,7 @@ const userQueries = {
     },
     getUserByUsername: async (username) => {
         try {
-            const user = await prisma.user.findUnique({
+            const user = await prisma.users.findFirst({
                 where: { username: username },
             });
 
@@ -28,12 +29,12 @@ const userQueries = {
             return user;
         } catch (err) {
             console.error('Error retrieving user by name: ', err);
-            throw new Error('Error retrieving user by username');
+            return null;
         }
     },
     getUserByEmail: async (email) => {
         try {
-            const user = await prisma.user.findFirst({
+            const user = await prisma.users.findUnique({
                 where: { email: email },
             });
             return user;
@@ -44,11 +45,12 @@ const userQueries = {
     },
     createUser: async (userData) => {
         try {
+            const { username, email, password } = userData;
             // hash password
             const hashedPassword = await bcrypt.hash(password, 10);
 
             // create new user
-            const newUser = await prisma.user.create({
+            const newUser = await prisma.users.create({
                 data: {
                     username,
                     email,
