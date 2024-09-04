@@ -9,6 +9,7 @@ const passport = require('./src/config/passport');
 
 // Routers
 const indexRouter = require('./src/routers/indexRouter');
+const usersRouter = require('./src/routers/usersRouter');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(
         saveUninitialized: true,
     })
 );
+app.use(passport.initialize());
 app.use(passport.session());
 // middleware parses user request object to response locals to let browser carry session along easy
 app.use((req, res, next) => {
@@ -34,6 +36,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', indexRouter);
+app.use('/user', usersRouter);
 
 // Catch all route handler if nothing else matches.
 app.use((req, res, next) => {
