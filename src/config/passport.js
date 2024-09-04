@@ -11,13 +11,16 @@ passport.use(
             const lowerCaseUsername = username.toLowerCase();
             const user = await userQueries.getUserByUsername(lowerCaseUsername);
             if (!user) {
+                console.error('User not found...');
                 return done(null, false, { message: 'Incorrect username' });
             }
             // Attempt to match password
             const match = await bcrypt.compare(password, user.password);
             if (!match) {
+                console.error('Incorrect password.');
                 return done(null, false, { message: 'Incorrect password.' });
             }
+            console.log('login successful');
             return done(null, user);
         } catch (err) {
             return done(err);
