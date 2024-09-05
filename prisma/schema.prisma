@@ -14,17 +14,28 @@ datasource db {
 }
 
 model Users {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  username String
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  username String   @unique
   password String
   files    File[]
+  folders  Folder[]
 }
 
 model File {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   title    String
   filePath String
-  User     Users? @relation(fields: [userId], references: [id])
-  userId   Int?
+  User     Users   @relation(fields: [userId], references: [id])
+  userId   Int
+  Folder   Folder? @relation(fields: [folderId], references: [id])
+  folderId Int?
+}
+
+model Folder {
+  id      Int    @id @default(autoincrement())
+  name    String
+  files   File[]
+  Users   Users? @relation(fields: [usersId], references: [id])
+  usersId Int
 }
