@@ -10,6 +10,7 @@ const passport = require('./src/config/passport');
 // Routers
 const indexRouter = require('./src/routers/indexRouter');
 const usersRouter = require('./src/routers/usersRouter');
+const uploaderRouter = require('./src/routers/uploaderRouter');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
+app.use('/files', uploaderRouter);
 
 // Catch all route handler if nothing else matches.
 app.use((req, res, next) => {
