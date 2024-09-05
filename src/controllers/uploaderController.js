@@ -1,24 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const multer = require('multer');
-
-const path = require('path');
-
-// set up multer storage
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../../public/uploads')); // Files will be saved here.
-    },
-    filename: function (req, file, cb) {
-        // Create unique filename using timestamps
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 150);
-        cb(null, uniqueSuffix + '-' + file.originalname);
-    },
-});
-
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 1024 * 1024 * 5 }, //5mb size limit
-});
+const upload = require('../config/multer');
 
 exports.file_upload_get = asyncHandler(async (req, res) => {
     console.log('Hit file upload GET');
