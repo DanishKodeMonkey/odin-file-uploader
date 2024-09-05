@@ -4,6 +4,8 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+// custom middleware
+const { userParser } = require('./src/middleware/authMiddleware');
 // Configs
 const passport = require('./src/config/passport');
 
@@ -31,10 +33,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 // middleware parses user request object to response locals to let browser carry session along easy
-app.use((req, res, next) => {
-    res.locals.currentUser = req.user || null;
-    next();
-});
+app.use(userParser);
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
