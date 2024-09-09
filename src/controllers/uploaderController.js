@@ -87,7 +87,7 @@ exports.createFolder = asyncHandler(async (req, res) => {
             name: name,
             userId: res.locals.currentUser.id,
         });
-        res.status(201).json(newFolder);
+        return newFolder;
     } catch (err) {
         console.error('Error creating folder in database ', err);
         res.status(500).json({ error: 'Failed to create folder' });
