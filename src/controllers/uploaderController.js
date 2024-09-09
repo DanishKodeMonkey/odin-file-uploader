@@ -93,3 +93,14 @@ exports.createFolder = asyncHandler(async (req, res) => {
         res.status(500).json({ error: 'Failed to create folder' });
     }
 });
+
+// list all folders
+exports.listFolders = asyncHandler(async (req, res) => {
+    try {
+        const folders = await uploadQueries.getFoldersByUserId(req.user.id);
+        res.status(200).json(folders);
+    } catch (err) {
+        console.error('Error retrieving folders:, ', err);
+        res.status(500).json({ message: 'Failed to retrieve folders' });
+    }
+});

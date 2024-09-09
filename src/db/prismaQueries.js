@@ -93,6 +93,16 @@ const uploadQueries = {
             throw new Error('Error creating folder record');
         }
     },
+    getFoldersByUserId: async (usersId) => {
+        try {
+            return await prisma.folder.findMany({
+                where: { usersId: usersId },
+            });
+        } catch (err) {
+            console.error('Error retrieving folders: ', err);
+            throw new Error('Error retrieving folders');
+        }
+    },
 };
 
 module.exports = { userQueries, uploadQueries };
