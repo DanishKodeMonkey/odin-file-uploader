@@ -1,10 +1,25 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 // Multer configuration
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../../public/uploads')); // Set destination of file storage
+        const folderName = req.body.folderName || 'default';
+        const userDir = path.join(
+            __dirname,
+            '../../public/uploads',
+            req.user.username
+        );
+        const folderPath = path.join(userDir, folderName);
+        try {
+            if (!fs.existsSync(folderPath)) {
+                fs.mkdirSync(folderPath, { recursive: true });
+            }
+            cb(null, folderPath);
+        } catch (err) {
+            cb(new Error('Failed to create folder for file upload'));
+        }
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 150);
