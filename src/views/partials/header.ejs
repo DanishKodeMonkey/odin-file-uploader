@@ -3,7 +3,11 @@
         <ul>
             <li><a href="/">Home</a></li>
             <% if (user) { %>
-            <li><a href="/files/upload">Upload</a></li>
+                <li>
+                    <a href="" aria-disabled="true" style="pointer-events: none; color: #ccc; text-decoration: line-through;">
+                        Upload*Deprecated, to be removed*
+                    </a>
+                </li>
             <li><a href="/user/logout">Logout</a></li>
             <% } else {%>
             <li><a href="/user/login">Login</a></li>
