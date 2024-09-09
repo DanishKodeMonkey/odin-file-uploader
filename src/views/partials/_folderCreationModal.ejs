@@ -1,0 +1,20 @@
+<div class="modal" id="folderCreationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Folder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+
+            </div>
+            <div class="modal-body">
+                <form action="/files/createFolder" method="POST">
+                    <div class="mb-3">
+                        <label for="folderName" class="form-label">Folder name</label>
+                        <input type="text" class="form-control" name="name" id="folderName" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create folder</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
