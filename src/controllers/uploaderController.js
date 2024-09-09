@@ -55,31 +55,41 @@ exports.file_upload_post = [
 
 // create folder
 exports.createFolder = asyncHandler(async (req, res) => {
+    // desired name of folder
     const { name } = req.body;
-    const userId = req.user.id;
-
-    // Create folder reference in db
-    const folder = await Prisma.folder.create({
-        data: {
-            name,
-            userId,
-        },
-    });
 
     // create directory on server
     const fs = require('fs');
     const path = require('path');
+    // User directory on server
     const userDir = path.join(
         __dirname,
         '../../public/uploads',
         req.user.username
     );
+    // folder path on user directory
     const folderPath = path.join(userDir, name);
 
+    // user directory not found
+    if (!fs.existsSync(userDir)) {
+        fs.mkdirSync(userDir, { recursive: true });
+    }
     // Folder not found
-    if (fs.existsSync(folderPath)) {
+    if (!fs.existsSync(folderPath)) {
         // Create parent folder if needed (recursive)
         fs.mkdirSync(folderPath, { recursive: true });
+    } else {
+        return res.status(400).json({ error: 'Folder already exists' });
     }
-    res.status(201).json(folder);
+
+    try {
+        const newFolder = await uploadQueries.createFolder({
+            name: name,
+            userId: res.locals.currentUser.id,
+        });
+        res.status(201).json(newFolder);
+    } catch (err) {
+        console.error('Error creating folder in database ', err);
+        res.status(500).json({ error: 'Failed to create folder' });
+    }
 });

@@ -78,6 +78,21 @@ const uploadQueries = {
             throw new Error('Error creating file record');
         }
     },
+    createFolder: async (folderData) => {
+        try {
+            const { name, userId } = folderData;
+            const newFolder = await prisma.folder.create({
+                data: {
+                    name: name,
+                    userId: userId,
+                },
+            });
+            return newFolder;
+        } catch (err) {
+            console.error('Error creating folder data: ', err);
+            throw new Error('Error creating folder record');
+        }
+    },
 };
 
 module.exports = { userQueries, uploadQueries };
