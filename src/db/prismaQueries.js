@@ -65,4 +65,19 @@ const userQueries = {
     },
 };
 
-module.exports = { userQueries };
+const uploadQueries = {
+    createFile: async (fileData) => {
+        try {
+            const { title, filePath, userId } = fileData;
+            const newFile = await prisma.file.create({
+                data: { title, filePath, userId },
+            });
+            return newFile;
+        } catch (err) {
+            console.error('Error creating file data: ', err);
+            throw new Error('Error creating file record');
+        }
+    },
+};
+
+module.exports = { userQueries, uploadQueries };
