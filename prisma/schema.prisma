@@ -36,6 +36,6 @@ model Folder {
   id      Int    @id @default(autoincrement())
   name    String
   files   File[]
-  Users   Users? @relation(fields: [usersId], references: [id])
+  Users   Users  @relation(fields: [usersId], references: [id])
   usersId Int
 }
