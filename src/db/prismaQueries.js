@@ -84,7 +84,7 @@ const uploadQueries = {
             const newFolder = await prisma.folder.create({
                 data: {
                     name: name,
-                    userId: userId,
+                    usersId: userId,
                 },
             });
             return newFolder;
