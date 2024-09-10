@@ -51,7 +51,7 @@ exports.file_upload_post = [
     }),
 ];
 
-/* Folder */
+/* Folders */
 
 // create folder
 exports.createFolder = asyncHandler(async (req, res) => {
@@ -102,5 +102,21 @@ exports.listFolders = asyncHandler(async (req, res) => {
     } catch (err) {
         console.error('Error retrieving folders:, ', err);
         res.status(500).json({ message: 'Failed to retrieve folders' });
+    }
+});
+
+exports.getFolderById = asyncHandler(async (req, res) => {
+    const { folderId } = req.params;
+    try {
+        const folder = await uploadQueries.getFolderById(
+            parseInt(folderId, 10)
+        );
+        if (!folder) {
+            return res.status(404).json({ message: 'Folder not found' });
+        }
+        res.status(200).json(folder);
+    } catch (err) {
+        console.error('Error retrieving folder by ID:', err);
+        res.status(500).json({ message: 'Failed to retrieve folder' });
     }
 });
