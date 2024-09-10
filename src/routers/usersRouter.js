@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const user_controller = require('../controllers/usersController');
+const { isAuthenticated } = require('../middleware/authMiddleware');
 
 // user sign up
 // GET
@@ -19,4 +20,6 @@ router.post('/login', user_controller.user_login_post);
 // GET
 router.get('/logout', user_controller.user_logout);
 
+/* User My files page */
+router.get('/:userId/files', isAuthenticated, user_controller.user_files_get);
 module.exports = router;
