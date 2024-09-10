@@ -22,4 +22,5 @@ router.get('/logout', user_controller.user_logout);
 
 /* User My files page */
 router.get('/:userId/files', isAuthenticated, user_controller.user_files_get);
+
 module.exports = router;
