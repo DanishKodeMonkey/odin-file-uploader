@@ -103,6 +103,17 @@ const uploadQueries = {
             throw new Error('Error retrieving folders');
         }
     },
+    getFolderById: async (folderId) => {
+        try {
+            return await prisma.folder.findUnique({
+                where: { id: folderId },
+                include: { files: true },
+            });
+        } catch (err) {
+            console.error('Error retrieving folder by Id:', err);
+            throw new Error('Error retrieving folder by ID');
+        }
+    },
 };
 
 module.exports = { userQueries, uploadQueries };
