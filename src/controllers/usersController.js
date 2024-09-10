@@ -164,3 +164,28 @@ exports.user_logout = (req, res) => {
         res.redirect('/');
     });
 };
+
+/* User "My files" page */
+/* My files page */
+exports.user_files_get = asyncHandler(async (req, res) => {
+    console.log(
+        'Checking ids...',
+        req.params.userId,
+        ' against ',
+        res.locals.currentUser.id
+    );
+    if (
+        parseInt(req.params.userId, 10) !==
+        parseInt(res.locals.currentUser.id, 10)
+    ) {
+        return res
+            .status(401)
+            .json({ message: 'Unauthorized access. User mismatch.' });
+    }
+    console.log('Hit My files GET');
+    res.render('pages/userFiles', {
+        description: 'My files page',
+        title: 'My files page',
+        user: res.locals.currentUser,
+    });
+});
