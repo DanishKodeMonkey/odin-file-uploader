@@ -6,18 +6,12 @@
         <h1>Welcome <%= user ? user.username : 'Guest' %>!</h1>
         <p>This is the home section of the file uploader</p>
         <p>Feel free to have a glimpse at the files that have been uploaded</p>
-        <% if (user) { %>
-         <div class="control-panel">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#fileUploadModal">Upload file</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#folderCreationModal">Create Folder</button>
-            <a href="/files/folders">View files</a>
-        </div>
-        <% }else{ %> 
-        <p>
-            To upload, <a href="/user/login">log in</a> or
-            <a href="/user/sign-up">sign up</a> today!
-        </p>
-        <%}%>
+        <% if (!user) { %>
+            <p>
+                To upload, <a href="/user/login">log in</a> or
+                <a href="/user/sign-up">sign up</a> today!
+            </p>
+        <% } %>
 
         <%- include('../partials/_fileUploadModal') %>
         <%- include('../partials/_folderCreationModal') %>

@@ -1,0 +1,33 @@
+<div class="file-explorer">
+    <div class="control-panel">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#fileUploadModal">Upload file</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#folderCreationModal">Create Folder</button>
+            <a href="/user/<%= user.id %>/files/folders">View folders</a>
+    </div>
+    <div class="folder-list">
+        <% if (folders && folders.length) { %>
+            <ul>
+                <% folders.forEach(folder=> { %>
+                    <li><a href="/user/<%= user.id %>/files/<%= folder.id %>"><%= folder.name %></a></li>
+                <% }) %>
+            </ul>
+         
+        <% } else{ %>
+            <p>No folders found.</p>
+        <% } %>
+
+        <div class="file-list">
+            <% if (files && files.length) { %>
+             <ul>
+                <% files.forEach(file =>{ %>
+                    <li>
+                        <a href="/files/<%= file.id %>"><%= file.name %></a>
+                    </li>
+                <% }) %>
+             </ul>
+            <% } else{ %>
+                <p>No files found.</p>
+            <% } %>
+        </div>
+    </div>
+</div>
