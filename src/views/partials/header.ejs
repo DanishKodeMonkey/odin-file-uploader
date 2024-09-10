@@ -2,11 +2,9 @@
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <% if (user) { %>
+            <% if (user && user.id) { %>
                 <li>
-                    <a href="" aria-disabled="true" style="pointer-events: none; color: #ccc; text-decoration: line-through;">
-                        Upload*Deprecated, to be removed*
-                    </a>
+                    <a href="/user/<%= user.id %>/files">My files</a>
                 </li>
             <li><a href="/user/logout">Logout</a></li>
             <% } else {%>
