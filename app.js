@@ -37,7 +37,7 @@ app.use(userParser);
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
-app.use('/files', uploaderRouter);
+app.use('/user/:userId/files', uploaderRouter);
 
 // Catch all route handler if nothing else matches.
 app.use((req, res, next) => {
