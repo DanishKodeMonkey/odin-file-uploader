@@ -3,16 +3,6 @@ const upload = require('../config/multer');
 const { uploadQueries } = require('../db/prismaQueries');
 
 /* File */
-exports.file_upload_get = asyncHandler(async (req, res) => {
-    console.log('Hit file upload GET');
-    res.render('pages/upload', {
-        description: 'Upload page',
-        title: 'Upload file',
-        errors: [],
-        user: res.locals.currentUser,
-    });
-});
-
 exports.file_upload_post = [
     upload.single('uploaded_file'),
     asyncHandler(async (req, res) => {
