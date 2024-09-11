@@ -5,6 +5,10 @@
             <a href="/user/<%= user.id %>/files/folders">View folders</a>
     </div>
     <div class="folder-list">
+        <div class="path-display">
+            <p>Current Path: <%= currentPath %></p>
+        </div>
+        <h3>Folders</h3>
         <% if (folders && folders.length) { %>
             <ul>
                 <% folders.forEach(folder=> { %>
@@ -15,19 +19,19 @@
         <% } else{ %>
             <p>No folders found.</p>
         <% } %>
-
-        <div class="file-list">
-            <% if (files && files.length) { %>
-             <ul>
-                <% files.forEach(file =>{ %>
-                    <li>
-                        <a href="/files/<%= file.id %>"><%= file.name %></a>
-                    </li>
-                <% }) %>
-             </ul>
-            <% } else{ %>
-                <p>No files found.</p>
-            <% } %>
-        </div>
+    </div>
+    <div class="file-list">
+        <h2>Files</h2>
+        <% if (files && files.length) { %>
+         <ul>
+            <% files.forEach(file =>{ %>
+                <li>
+                    <a href="/user/<%= user.id %>/files/<%= file.id %>"><%= file.title %></a>
+                </li>
+            <% }) %>
+         </ul>
+        <% } else{ %>
+            <p>No files found.</p>
+        <% } %>
     </div>
 </div>

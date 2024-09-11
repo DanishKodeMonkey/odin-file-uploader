@@ -7,8 +7,13 @@
         <p>This is the files section of your user account.</p>
         <p>Feel free to have a glimpse at the files that have been uploaded</p>
 
+        <% if ((files && files.length > 0) || (files && files.length > 0)) { %>
+            <%- include('../partials/fileExplorer.ejs', {files: files, folders: folders}) %>
+        <%} else if(error && error.length > 0){ %>
+            <%- include('../partials/error.ejs', {errors: err}) %>
+        <% } %>
 
-
+        
         <%- include('../partials/_fileUploadModal') %>
         <%- include('../partials/_folderCreationModal') %>
 
