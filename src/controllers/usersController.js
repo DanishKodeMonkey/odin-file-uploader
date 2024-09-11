@@ -1,7 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const passport = require('../config/passport');
 const { body, validationResult } = require('express-validator');
-const { userQueries } = require('../db/prismaQueries');
+const { userQueries, uploadQueries } = require('../db/prismaQueries');
+const { idMatcher } = require('../middleware/authMiddleware');
 
 // User validation
 const validateUserSignup = [
@@ -168,24 +169,32 @@ exports.user_logout = (req, res) => {
 /* User "My files" page */
 /* My files page */
 exports.user_files_get = asyncHandler(async (req, res) => {
-    console.log(
-        'Checking ids...',
-        req.params.userId,
-        ' against ',
-        res.locals.currentUser.id
-    );
-    if (
-        parseInt(req.params.userId, 10) !==
-        parseInt(res.locals.currentUser.id, 10)
-    ) {
-        return res
-            .status(401)
-            .json({ message: 'Unauthorized access. User mismatch.' });
-    }
     console.log('Hit My files GET');
-    res.render('pages/userFiles', {
-        description: 'My files page',
-        title: 'My files page',
-        user: res.locals.currentUser,
-    });
+    console.log('Fetching folders');
+    try {
+        const folders = await uploadQueries.getFoldersByUserId(req.user.id);
+        const files = await uploadQueries.getFilesByUserId(req.user.id);
+
+        console.log('Done fetching data, rendering page...');
+        console.log(files);
+        console.log(folders);
+        res.render('pages/userFiles', {
+            description: 'My files page',
+            title: 'My files page',
+            user: res.locals.currentUser,
+            folders: folders || [],
+            files: files || [],
+            error: null,
+        });
+    } catch (err) {
+        console.error('Error retrieving files and folders', err);
+        res.render('pages/userFiles', {
+            description: 'My files page',
+            title: 'My files page',
+            user: res.locals.currentUser,
+            folders: [],
+            files: [],
+            error: [{ msg: 'Error retrieving files or folders' }],
+        });
+    }
 });
