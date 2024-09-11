@@ -8,8 +8,6 @@ const { isAuthenticated } = require('../middleware/authMiddleware'); // Authenti
 router.use(isAuthenticated);
 
 /* Files */
-router.get('/upload', uploader_controller.file_upload_get); // protected route
-
 router.post('/upload', uploader_controller.file_upload_post); // protected route
 
 /* Folders */
