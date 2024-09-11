@@ -46,7 +46,7 @@ exports.file_upload_post = [
 // create folder
 exports.createFolder = asyncHandler(async (req, res) => {
     // desired name of folder
-    const { name } = req.body;
+    const { name, parentFolderPath } = req.body;
 
     // create directory on server
     const fs = require('fs');
@@ -57,8 +57,13 @@ exports.createFolder = asyncHandler(async (req, res) => {
         '../../public/uploads',
         req.user.username
     );
+    // Generate user path for relative path for database
+    const userPath = parentFolderPath
+        ? `${parentFolderPath}/${name}`
+        : `${req.user.username}/${name}`;
+
     // folder path on user directory
-    const folderPath = path.join(userDir, name);
+    const folderPath = path.join(userDir, userPath);
 
     // user directory not found
     if (!fs.existsSync(userDir)) {
@@ -76,6 +81,7 @@ exports.createFolder = asyncHandler(async (req, res) => {
         const newFolder = await uploadQueries.createFolder({
             name: name,
             userId: res.locals.currentUser.id,
+            filePath: userPath,
         });
         return newFolder;
     } catch (err) {
