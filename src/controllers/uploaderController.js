@@ -23,7 +23,7 @@ exports.file_upload_post = [
             console.log('File uploaded successfully: ', req.file);
             console.log('Database record created: ', newFile);
 
-            res.redirect('/');
+            res.redirect(`/user/${res.locals.currentUser.id}/files`);
         } catch (err) {
             console.error('Error saving file to database: ', err);
             return res.status(500).json({ msg: 'Failed to upload file' });
@@ -50,7 +50,7 @@ exports.createFolder = asyncHandler(async (req, res) => {
     // Generate user path for relative path for database
     const userPath = parentFolderPath
         ? `${parentFolderPath}/${name}`
-        : `${req.user.username}/${name}`;
+        : `/${name}`;
 
     // folder path on user directory
     const folderPath = path.join(userDir, userPath);
@@ -73,7 +73,7 @@ exports.createFolder = asyncHandler(async (req, res) => {
             userId: res.locals.currentUser.id,
             filePath: userPath,
         });
-        return newFolder;
+        res.redirect(`/user/${res.locals.currentUser.id}/files`);
     } catch (err) {
         console.error('Error creating folder in database ', err);
         res.status(500).json({ error: 'Failed to create folder' });
