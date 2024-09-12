@@ -7,12 +7,7 @@ exports.file_upload_post = [
     upload.single('uploaded_file'),
     asyncHandler(async (req, res) => {
         if (!req.file) {
-            return res.status(400).render('pages/upload', {
-                description: 'Upload page',
-                title: 'Upload file',
-                errors: [{ msg: 'Please upload a file' }],
-                user: res.locals.currentUser,
-            });
+            return res.status(400).json({ msg: 'please select a file' });
         }
         // Save file details to database
         try {
@@ -31,12 +26,7 @@ exports.file_upload_post = [
             res.redirect('/');
         } catch (err) {
             console.error('Error saving file to database: ', err);
-            return res.status(500).render('pages/upload', {
-                description: 'Upload page',
-                title: 'Upload file',
-                errors: [{ msg: 'Failed to save file information' }],
-                user: res.locals.currentUser,
-            });
+            return res.status(500).json({ msg: 'Failed to upload file' });
         }
     }),
 ];

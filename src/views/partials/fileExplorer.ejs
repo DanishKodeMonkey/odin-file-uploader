@@ -6,23 +6,23 @@
     </div>
     <div class="folder-list">
         <div class="path-display">
-            <p>Current Path: <%= currentPath %></p>
+
         </div>
         <h3>Folders</h3>
-        <% if (folders && folders.length) { %>
+        <% if (folders && folders.length >= 1) { %>
             <ul>
                 <% folders.forEach(folder=> { %>
                     <li><a href="/user/<%= user.id %>/files/<%= folder.id %>"><%= folder.name %></a></li>
                 <% }) %>
             </ul>
          
-        <% } else{ %>
+        <% } else { %>
             <p>No folders found.</p>
         <% } %>
     </div>
     <div class="file-list">
         <h2>Files</h2>
-        <% if (files && files.length) { %>
+        <% if (files && files.length >= 1) { %>
          <ul>
             <% files.forEach(file =>{ %>
                 <li>
@@ -30,7 +30,7 @@
                 </li>
             <% }) %>
          </ul>
-        <% } else{ %>
+        <% } else { %>
             <p>No files found.</p>
         <% } %>
     </div>
