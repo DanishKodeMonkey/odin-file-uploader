@@ -85,7 +85,7 @@ const uploadQueries = {
                 data: {
                     name: name,
                     usersId: userId,
-                    filePath: filePath
+                    filePath: filePath,
                 },
             });
             return newFolder;
@@ -117,7 +117,7 @@ const uploadQueries = {
     getFolderById: async (folderId) => {
         try {
             return await prisma.folder.findUnique({
-                where: { id: folderId },
+                where: { id: parseInt(folderId, 10) },
                 include: { files: true },
             });
         } catch (err) {
