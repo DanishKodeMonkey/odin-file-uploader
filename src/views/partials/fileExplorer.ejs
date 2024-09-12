@@ -12,7 +12,7 @@
         <% if (folders && folders.length >= 1) { %>
             <ul>
                 <% folders.forEach(folder=> { %>
-                    <li><a href="/user/<%= user.id %>/files/<%= folder.id %>"><%= folder.name %></a></li>
+                    <li><a href="/user/<%= user.id %>/folders/<%= folder.id %>"><%= folder.name %></a></li>
                 <% }) %>
             </ul>
          
