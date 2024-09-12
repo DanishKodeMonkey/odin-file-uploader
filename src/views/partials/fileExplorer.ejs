@@ -1,25 +1,30 @@
 <div class="file-explorer">
     <div class="control-panel">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#fileUploadModal">Upload file</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#folderCreationModal">Create Folder</button>
-            <a href="/user/<%= user.id %>/files/folders">View folders</a>
+            <% if (folderView === false) { %>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#folderCreationModal">Create Folder</button>
+            <% } %>
     </div>
-    <div class="folder-list">
-        <div class="path-display">
 
+        <div class="path-display">
+                <p>Current path: <%= path %></p>
         </div>
-        <h3>Folders</h3>
-        <% if (folders && folders.length >= 1) { %>
-            <ul>
-                <% folders.forEach(folder=> { %>
-                    <li><a href="/user/<%= user.id %>/folders/<%= folder.id %>"><%= folder.name %></a></li>
-                <% }) %>
-            </ul>
-         
-        <% } else { %>
-            <p>No folders found.</p>
+        <% if (folderView === false) { %>
+            <div class="folder-list">       
+                <h3>Folders</h3>
+                <% if (folders && folders.length >= 1) { %>
+                    <ul>
+                        <% folders.forEach(folder=> { %>
+                            <li><a href="/user/<%= user.id %>/files/folder/<%= folder.id %>"><%= folder.name %></a></li>
+                        <% }) %>
+                    </ul>
+                
+                    <% } else { %>
+                        <p>No folders found.</p>
+                <% } %>
+            </div>
         <% } %>
-    </div>
+
     <div class="file-list">
         <h2>Files</h2>
         <% if (files && files.length >= 1) { %>
