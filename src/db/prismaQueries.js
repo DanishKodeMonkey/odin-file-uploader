@@ -80,11 +80,12 @@ const uploadQueries = {
     },
     createFolder: async (folderData) => {
         try {
-            const { name, userId } = folderData;
+            const { name, userId, filePath } = folderData;
             const newFolder = await prisma.folder.create({
                 data: {
                     name: name,
                     usersId: userId,
+                    filePath: filePath
                 },
             });
             return newFolder;
