@@ -28,4 +28,10 @@ router.get(
     user_controller.user_files_get
 );
 
+router.get(
+    '/:userId/files/folder/:folderId',
+    isAuthenticated,
+    idMatcher,
+    user_controller.user_folder_get
+);
 module.exports = router;

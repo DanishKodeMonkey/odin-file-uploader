@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../partials/head') %>
+    <body>
+        <%- include('../partials/header') %>
+        <h1>Contents of <%= folders.name %></h1>
+        <a href="/user/<%= user.id %>/files">Back to My files</a>
+        <% if ((files && files.length >= 0) || (files && files.length >= 0)) { %>
+            <%- include('../partials/fileExplorer.ejs', {files: files, folders: [], path: folders.filePath, folderView: true}) %>
+        <%} else if(error && error.length > 0){ %>
+            <%- include('../partials/error.ejs', {errors: err}) %>
+        <% } %>
+
+        
+        <%- include('../partials/_fileUploadModal') %>
+
+        <%- include('../partials/footer.ejs') %>
+    </body>
+</html>

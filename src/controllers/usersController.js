@@ -198,3 +198,33 @@ exports.user_files_get = asyncHandler(async (req, res) => {
         });
     }
 });
+
+exports.user_folder_get = asyncHandler(async (req, res) => {
+    console.log('Hit folder view GET');
+    const folderId = req.params.folderId;
+    console.log('Fetching folder contents for folder: ', folderId);
+
+    try {
+        const folder = await uploadQueries.getFolderById(folderId);
+        console.log('Done fetching data, rendering page with content: ');
+        console.log(folder);
+        res.render('pages/folderView', {
+            description: 'Folder view',
+            title: 'Folder view',
+            user: res.locals.currentUser,
+            folders: folder,
+            files: [],
+            error: null,
+        });
+    } catch (err) {
+        console.error('Error retrieving folder...', err);
+        res.render('pages/folderView', {
+            description: 'Folder view',
+            title: 'Folder view',
+            user: res.locals.currentUser,
+            folders: [],
+            files: [],
+            error: [{ msg: 'Error retrieving folder...' }],
+        });
+    }
+});
