@@ -50,7 +50,7 @@ exports.createFolder = asyncHandler(async (req, res) => {
     // Generate user path for relative path for database
     const userPath = parentFolderPath
         ? `${parentFolderPath}/${name}`
-        : `/${name}`;
+        : `${name}`;
 
     // folder path on user directory
     const folderPath = path.join(userDir, userPath);
@@ -71,7 +71,7 @@ exports.createFolder = asyncHandler(async (req, res) => {
         const newFolder = await uploadQueries.createFolder({
             name: name,
             userId: res.locals.currentUser.id,
-            filePath: userPath,
+            filePath: `${req.user.username}/${userPath}`,
         });
         res.redirect(`/user/${res.locals.currentUser.id}/files`);
     } catch (err) {
