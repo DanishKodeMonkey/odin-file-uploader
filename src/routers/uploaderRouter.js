@@ -8,7 +8,7 @@ const { isAuthenticated } = require('../middleware/authMiddleware'); // Authenti
 router.use(isAuthenticated);
 
 /* Files */
-router.post('/upload', uploader_controller.file_upload_post); // protected route
+router.post('/upload/:folderName?', uploader_controller.file_upload_post); // protected route
 
 /* Folders */
 // Get all folders
