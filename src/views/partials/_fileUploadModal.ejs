@@ -6,11 +6,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="files/upload" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
+                <form action="/user/<%= user.id %>/files/upload<%= folderName ? "/" + folderName : '' %>" method="POST" enctype="multipart/form-data">
                     <label for="fileInput" class="form-label" >Select File</label>
                     <input type="file" class="form-control" name="uploaded_file" id="fileInput" required>
-                </div>
                 <button type="submit" class="btn btn-primary">Upload File</button>
             </form></div>
         </div>
