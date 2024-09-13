@@ -175,9 +175,6 @@ exports.user_files_get = asyncHandler(async (req, res) => {
         const folders = await uploadQueries.getFoldersByUserId(req.user.id);
         const files = await uploadQueries.getFilesByUserId(req.user.id);
 
-        console.log('Done fetching data, rendering page...');
-        console.log(files);
-        console.log(folders);
         res.render('pages/userFiles', {
             description: 'My files page',
             title: 'My files page',
@@ -202,11 +199,9 @@ exports.user_files_get = asyncHandler(async (req, res) => {
 exports.user_folder_get = asyncHandler(async (req, res) => {
     console.log('Hit folder view GET');
     const folderId = req.params.folderId;
-    console.log('Fetching folder contents for folder: ', folderId);
 
     try {
         const folder = await uploadQueries.getFolderById(folderId);
-        console.log('Done fetching data, rendering page with content: ');
         console.log(folder);
         res.render('pages/folderView', {
             description: 'Folder view',
@@ -214,6 +209,7 @@ exports.user_folder_get = asyncHandler(async (req, res) => {
             user: res.locals.currentUser,
             folders: folder,
             files: [],
+            folderName: folder.name,
             error: null,
         });
     } catch (err) {
