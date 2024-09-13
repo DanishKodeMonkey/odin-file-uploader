@@ -9,6 +9,7 @@ exports.file_upload_post = [
         if (!req.file) {
             return res.status(400).json({ msg: 'please select a file' });
         }
+
         // Save file details to database
         try {
             const filePath = req.file.path;
