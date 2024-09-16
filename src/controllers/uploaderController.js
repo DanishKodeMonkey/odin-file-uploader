@@ -10,6 +10,17 @@ exports.file_upload_post = [
             return res.status(400).json({ msg: 'please select a file' });
         }
 
+        let folderId = null; //default null folderId if no foldername is provided
+
+        if (req.params.folderName) {
+            const folder = await uploadQueries.getFolderByName(
+                req.params.folderName,
+                res.locals.currentUser.id
+            );
+            if (folder) {
+                folderId = folder.id;
+            }
+        }
         // Save file details to database
         try {
             const filePath = req.file.path;
@@ -20,6 +31,7 @@ exports.file_upload_post = [
                 title: fileTitle,
                 filePath: filePath,
                 userId: res.locals.currentUser.id, // associate with uploader id
+                folderId: folderId,
             });
             console.log('File uploaded successfully: ', req.file);
             console.log('Database record created: ', newFile);
