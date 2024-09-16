@@ -132,6 +132,51 @@ exports.folder_create_post = asyncHandler(async (req, res) => {
     }
 });
 
+// Delete folder
+exports.folder_delete_post = asyncHandler(async (req, res) => {
+    const { folderId, userId } = req.params;
+    const fs = require('fs');
+    const path = require('path');
+
+    try {
+        // Fetch folder and files
+        const folder = await uploadQueries.getFolderById(folderId);
+
+        if (!folder) {
+            return res.status(404).json({ msg: 'Folder not found' });
+        }
+
+        if (folder.usersId !== parseInt(userId, 10)) {
+            return res.status(403).json({ msg: 'Unauthorized action' });
+        }
+        const userDir = path.join(
+            __dirname,
+            '../../public/uploads',
+            req.user.username
+        );
+        // Delete all files in the folder on server
+        for (const file of folder.files) {
+            const filePath = path.join(userDir, file.filePath);
+            console.log('Deleting path on server: ', filePath);
+            // if file exists, delete.
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+
+        // Delete all file references on db related to folder
+        await uploadQueries.deleteFileByFolderId(folderId, userId);
+
+        // Finally, delete folder
+        await uploadQueries.deleteFolderById(folderId, userId);
+
+        res.redirect(`/user/${userId}/files`);
+    } catch (err) {
+        console.error('Error deleting folder: ', err);
+        res.status(500).json({ msg: 'Error deleting folder' });
+    }
+});
+
 // list all folders
 exports.folder_list_get = asyncHandler(async (req, res) => {
     try {
@@ -139,7 +184,7 @@ exports.folder_list_get = asyncHandler(async (req, res) => {
         res.status(200).json(folders);
     } catch (err) {
         console.error('Error retrieving folders:, ', err);
-        res.status(500).json({ message: 'Failed to retrieve folders' });
+        res.status(500).json({ msg: 'Failed to retrieve folders' });
     }
 });
 
@@ -150,11 +195,11 @@ exports.folder_get = asyncHandler(async (req, res) => {
             parseInt(folderId, 10)
         );
         if (!folder) {
-            return res.status(404).json({ message: 'Folder not found' });
+            return res.status(404).json({ msg: 'Folder not found' });
         }
         res.status(200).json(folder);
     } catch (err) {
         console.error('Error retrieving folder by ID:', err);
-        res.status(500).json({ message: 'Failed to retrieve folder' });
+        res.status(500).json({ msg: 'Failed to retrieve folder' });
     }
 });
