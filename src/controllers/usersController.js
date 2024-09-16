@@ -2,7 +2,6 @@ const asyncHandler = require('express-async-handler');
 const passport = require('../config/passport');
 const { body, validationResult } = require('express-validator');
 const { userQueries, uploadQueries } = require('../db/prismaQueries');
-const { idMatcher } = require('../middleware/authMiddleware');
 
 // User validation
 const validateUserSignup = [
@@ -196,6 +195,7 @@ exports.user_files_get = asyncHandler(async (req, res) => {
     }
 });
 
+// Get user folder with contents
 exports.user_folder_get = asyncHandler(async (req, res) => {
     console.log('Hit folder view GET');
     const folderId = req.params.folderId;
@@ -208,7 +208,7 @@ exports.user_folder_get = asyncHandler(async (req, res) => {
             title: 'Folder view',
             user: res.locals.currentUser,
             folders: folder,
-            files: [],
+            files: folder.files,
             folderName: folder.name,
             error: null,
         });
