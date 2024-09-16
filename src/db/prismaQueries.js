@@ -96,6 +96,22 @@ const uploadQueries = {
             throw new Error('Error deleting file');
         }
     },
+    deleteFolderById: async (folderId, userId) => {
+        return prisma.folder.delete({
+            where: {
+                id: parseInt(folderId, 10),
+                usersId: parseInt(userId, 10),
+            },
+        });
+    },
+    deleteFileByFolderId: async (folderId, userId) => {
+        return prisma.file.deleteMany({
+            where: {
+                folderId: parseInt(folderId, 10),
+                userId: parseInt(userId, 10),
+            },
+        });
+    },
     createFolder: async (folderData) => {
         try {
             const { name, userId, filePath } = folderData;

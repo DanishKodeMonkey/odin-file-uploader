@@ -27,7 +27,4 @@ router.post(
     uploader_controller.folder_delete_post
 );
 
-// Get folder by ID
-router.get('/folders/:folderId', uploader_controller.folder_get);
-
 module.exports = router;
