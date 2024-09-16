@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const uploader_controller = require('../controllers/uploaderController');
 const { isAuthenticated } = require('../middleware/authMiddleware'); // Authentication middleware
@@ -8,6 +8,9 @@ const { isAuthenticated } = require('../middleware/authMiddleware'); // Authenti
 router.use(isAuthenticated);
 
 /* Files */
+// Delete
+router.post('/:fileId/delete', uploader_controller.file_delete_post);
+// Create
 router.post('/upload/:folderName?', uploader_controller.file_upload_post); // protected route
 
 /* Folders */

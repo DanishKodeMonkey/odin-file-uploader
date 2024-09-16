@@ -83,6 +83,19 @@ const uploadQueries = {
             throw new Error('Error creating file record');
         }
     },
+    deleteFileById: async (fileId, userId) => {
+        try {
+            return await prisma.file.delete({
+                where: {
+                    id: parseInt(fileId, 10),
+                    userId: parseInt(userId, 10),
+                },
+            });
+        } catch (err) {
+            console.error('Error deleting file from database: ', err);
+            throw new Error('Error deleting file');
+        }
+    },
     createFolder: async (folderData) => {
         try {
             const { name, userId, filePath } = folderData;
@@ -99,10 +112,20 @@ const uploadQueries = {
             throw new Error('Error creating folder record');
         }
     },
+    getFileByFileId: async (fileId) => {
+        try {
+            return await prisma.file.findUnique({
+                where: { id: parseInt(fileId, 10) },
+            });
+        } catch (err) {
+            console.error('Error retrieving file by ID: ', err);
+            throw new Error('Error retrieving file by ID');
+        }
+    },
     getFilesByUserId: async (userId) => {
         try {
             return await prisma.file.findMany({
-                where: { userId: userId },
+                where: { userId: userId, folderId: null },
             });
         } catch (err) {
             console.error('Error retrieving files: ', err);
