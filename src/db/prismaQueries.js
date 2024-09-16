@@ -68,9 +68,14 @@ const userQueries = {
 const uploadQueries = {
     createFile: async (fileData) => {
         try {
-            const { title, filePath, userId } = fileData;
+            const { title, filePath, userId, folderId } = fileData;
             const newFile = await prisma.file.create({
-                data: { title, filePath, userId },
+                data: {
+                    title: title,
+                    filePath: filePath,
+                    userId: userId,
+                    folderId: folderId || null,
+                },
             });
             return newFile;
         } catch (err) {
@@ -125,9 +130,9 @@ const uploadQueries = {
             throw new Error('Error retrieving folder by ID');
         }
     },
-    getFolderByName: async (folderName) => {
+    getFolderByName: async (folderName, userId) => {
         try {
-            return await prisma.folder.findUnique({
+            return await prisma.folder.findFirst({
                 where: { name: folderName, usersId: userId },
                 include: { files: true },
             });
