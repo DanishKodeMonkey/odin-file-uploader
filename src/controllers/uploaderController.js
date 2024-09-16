@@ -44,6 +44,45 @@ exports.file_upload_post = [
     }),
 ];
 
+exports.file_delete_post = asyncHandler(async (req, res) => {
+    // extract nessecary data for querying
+    const { userId, fileId } = req.params;
+
+    console.warn(`REACHED FILE DELETE POST FOR USER ${userId}, FILE ${fileId}`);
+    // import file services
+    const fs = require('fs');
+    const path = require('path');
+    try {
+        // fetch file details from database
+        const file = await uploadQueries.getFileByFileId(fileId);
+
+        // Ensure file exists and belongs to authenticated user
+        if (!file || file.userId !== parseInt(userId, 10)) {
+            return res
+                .status(403)
+                .json({ msg: 'Unauthorized or file not found.' });
+        }
+
+        // Ready to remove file
+        const filePath = path.resolve(file.filePath);
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error('Error deleting file from file system: ', err);
+                return res
+                    .status(500)
+                    .json({ msg: 'Error deleting file from server.' });
+            }
+        });
+        // Delete file references from DB
+        await uploadQueries.deleteFileById(fileId, userId);
+
+        res.redirect(`/user/${userId}/files`);
+    } catch (err) {
+        console.error('Error deleting file: ', err);
+        res.status(500).json({ msg: 'Error deleting file' });
+    }
+});
+
 /* Folders */
 
 // create folder
