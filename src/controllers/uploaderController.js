@@ -86,7 +86,7 @@ exports.file_delete_post = asyncHandler(async (req, res) => {
 /* Folders */
 
 // create folder
-exports.createFolder = asyncHandler(async (req, res) => {
+exports.folder_create_post = asyncHandler(async (req, res) => {
     // desired name of folder
     const { name, parentFolderPath } = req.body;
 
@@ -133,7 +133,7 @@ exports.createFolder = asyncHandler(async (req, res) => {
 });
 
 // list all folders
-exports.listFolders = asyncHandler(async (req, res) => {
+exports.folder_list_get = asyncHandler(async (req, res) => {
     try {
         const folders = await uploadQueries.getFoldersByUserId(req.user.id);
         res.status(200).json(folders);
@@ -143,7 +143,7 @@ exports.listFolders = asyncHandler(async (req, res) => {
     }
 });
 
-exports.getFolderById = asyncHandler(async (req, res) => {
+exports.folder_get = asyncHandler(async (req, res) => {
     const { folderId } = req.params;
     try {
         const folder = await uploadQueries.getFolderById(
