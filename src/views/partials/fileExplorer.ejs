@@ -17,7 +17,7 @@
                         <% folders.forEach(folder=> { %>
                             <li><a href="/user/<%= user.id %>/files/folder/<%= folder.id %>"><%= folder.name %></a></li>
                             <form action="/user/<%= user.id %>/files/folders/<%= folder.id %>/delete" method="post" style="display:inline;">
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(`Are you sure you want to delete this folder? This action cannot be reversed.`)">Delete</button>
                             </form>
                         <% }) %>
                     </ul>
@@ -36,7 +36,7 @@
                 <li>
                     <a href="/user/<%= user.id %>/files/<%= file.id %>"><%= file.title %></a>
                     <form action="/user/<%= user.id %>/files/<%= file.id %>/delete" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(`Are you sure you want to delete this file? This action cannot be reversed.`)">Delete</button>
                     </form>
                 </li>
             <% }) %>
