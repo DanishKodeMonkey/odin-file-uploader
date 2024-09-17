@@ -11,7 +11,7 @@ exports.file_upload_post = [
         }
 
         let folderId = null; //default null folderId if no foldername is provided
-
+        let folderName = null;
         if (req.params.folderName) {
             const folder = await uploadQueries.getFolderByName(
                 req.params.folderName,
@@ -19,12 +19,18 @@ exports.file_upload_post = [
             );
             if (folder) {
                 folderId = folder.id;
+                folderName = folder.name;
             }
         }
+
         // Save file details to database
         try {
-            const filePath = req.file.path;
+            const filePath = folderName
+                ? `${res.locals.currentUser.username}/${folderName}/${req.file.filename}`
+                : `${res.locals.currentUser.username}/default/${req.file.filename}`;
+            console.log('Saved filePath: ', filePath);
             const fileTitle = req.file.originalname;
+            console.log('Saved fileTitle', fileTitle);
 
             // use locals currentuser userId to tie file to profile in database
             const newFile = await uploadQueries.createFile({
@@ -55,7 +61,7 @@ exports.file_delete_post = asyncHandler(async (req, res) => {
     try {
         // fetch file details from database
         const file = await uploadQueries.getFileByFileId(fileId);
-
+        console.log('Starting operation against ', file.filePath);
         // Ensure file exists and belongs to authenticated user
         if (!file || file.userId !== parseInt(userId, 10)) {
             return res
@@ -64,7 +70,12 @@ exports.file_delete_post = asyncHandler(async (req, res) => {
         }
 
         // Ready to remove file
-        const filePath = path.resolve(file.filePath);
+        const filePath = path.join(
+            __dirname,
+            '../../public/uploads',
+            file.filePath
+        );
+        console.log('Trying to delete filePath: ', filePath);
         fs.unlink(filePath, (err) => {
             if (err) {
                 console.error('Error deleting file from file system: ', err);
@@ -149,14 +160,10 @@ exports.folder_delete_post = asyncHandler(async (req, res) => {
         if (folder.usersId !== parseInt(userId, 10)) {
             return res.status(403).json({ msg: 'Unauthorized action' });
         }
-        const userDir = path.join(
-            __dirname,
-            '../../public/uploads',
-            req.user.username
-        );
+        const sysDir = path.join(__dirname, '../../public/uploads');
         // Delete all files in the folder on server
         for (const file of folder.files) {
-            const filePath = path.join(userDir, file.filePath);
+            const filePath = path.join(sysDir, file.filePath);
             console.log('Deleting path on server: ', filePath);
             // if file exists, delete.
             if (fs.existsSync(filePath)) {
@@ -168,6 +175,14 @@ exports.folder_delete_post = asyncHandler(async (req, res) => {
         await uploadQueries.deleteFileByFolderId(folderId, userId);
 
         // Finally, delete folder
+        // Sysdrive folder
+        const folderDir = path.join(sysDir, folder.filePath);
+        console.log('Trying to delete folder: ', folderDir);
+        if (fs.existsSync(folderDir)) {
+            console.log('Folder found, deleting.');
+            fs.rmSync(folderDir, { recursive: true, force: true });
+        }
+        // db reference.
         await uploadQueries.deleteFolderById(folderId, userId);
 
         res.redirect(`/user/${userId}/files`);
