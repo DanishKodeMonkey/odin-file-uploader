@@ -8,16 +8,7 @@ const { isAuthenticated, idMatcher } = require('../middleware/authMiddleware'); 
 router.use(isAuthenticated);
 router.use(idMatcher);
 
-/* Files */
-// Delete
-router.post('/:fileId/delete', uploader_controller.file_delete_post);
-// Create
-router.post('/upload/:folderName?', uploader_controller.file_upload_post); // protected route
-
 /* Folders */
-// Get all folders
-router.get('/folders', uploader_controller.folder_list_get);
-
 // Create new folder
 router.post('/createFolder', uploader_controller.folder_create_post);
 
@@ -26,5 +17,11 @@ router.post(
     '/folders/:folderId/delete',
     uploader_controller.folder_delete_post
 );
+
+/* Files */
+// Delete
+router.post('/:fileId/delete', uploader_controller.file_delete_post);
+// Create
+router.post('/:folderName?', uploader_controller.file_upload_post); // protected route
 
 module.exports = router;

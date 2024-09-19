@@ -192,30 +192,3 @@ exports.folder_delete_post = asyncHandler(async (req, res) => {
         res.status(500).json({ msg: 'Error deleting folder' });
     }
 });
-
-// list all folders
-exports.folder_list_get = asyncHandler(async (req, res) => {
-    try {
-        const folders = await uploadQueries.getFoldersByUserId(req.user.id);
-        res.status(200).json(folders);
-    } catch (err) {
-        console.error('Error retrieving folders:, ', err);
-        res.status(500).json({ msg: 'Failed to retrieve folders' });
-    }
-});
-
-exports.folder_get = asyncHandler(async (req, res) => {
-    const { folderId } = req.params;
-    try {
-        const folder = await uploadQueries.getFolderById(
-            parseInt(folderId, 10)
-        );
-        if (!folder) {
-            return res.status(404).json({ msg: 'Folder not found' });
-        }
-        res.status(200).json(folder);
-    } catch (err) {
-        console.error('Error retrieving folder by ID:', err);
-        res.status(500).json({ msg: 'Failed to retrieve folder' });
-    }
-});

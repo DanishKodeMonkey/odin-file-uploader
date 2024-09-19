@@ -13,6 +13,7 @@ const passport = require('./src/config/passport');
 const indexRouter = require('./src/routers/indexRouter');
 const usersRouter = require('./src/routers/usersRouter');
 const uploaderRouter = require('./src/routers/uploaderRouter');
+const filesRouter = require('./src/routers/filesRouter');
 
 const app = express();
 
@@ -37,7 +38,8 @@ app.use(userParser);
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
-app.use('/user/:userId/files', uploaderRouter);
+app.use('/user/:userId/files', filesRouter);
+app.use('/user/:userId/files/upload', uploaderRouter);
 
 // Catch all route handler if nothing else matches.
 app.use((req, res, next) => {

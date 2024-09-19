@@ -129,6 +129,20 @@ const uploadQueries = {
             throw new Error('Error creating folder record');
         }
     },
+    getFolderByName: async (folderName, userId) => {
+        try {
+            return await prisma.folder.findFirst({
+                where: { name: folderName, usersId: userId },
+                include: { files: true },
+            });
+        } catch (err) {
+            console.error('Error retrieving folder by name: ', err);
+            throw new Error('Error retrieving folder by name');
+        }
+    },
+};
+
+const filesQueries = {
     getFileByFileId: async (fileId) => {
         try {
             return await prisma.file.findUnique({
@@ -171,17 +185,6 @@ const uploadQueries = {
             throw new Error('Error retrieving folder by ID');
         }
     },
-    getFolderByName: async (folderName, userId) => {
-        try {
-            return await prisma.folder.findFirst({
-                where: { name: folderName, usersId: userId },
-                include: { files: true },
-            });
-        } catch (err) {
-            console.error('Error retrieving folder by name: ', err);
-            throw new Error('Error retrieving folder by name');
-        }
-    },
 };
 
-module.exports = { userQueries, uploadQueries };
+module.exports = { userQueries, uploadQueries, filesQueries };

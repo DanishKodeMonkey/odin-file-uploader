@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const user_controller = require('../controllers/usersController');
-const { isAuthenticated, idMatcher } = require('../middleware/authMiddleware');
 
 // user sign up
 // GET
@@ -19,30 +18,5 @@ router.post('/login', user_controller.user_login_post);
 // user sign out
 // GET
 router.get('/logout', user_controller.user_logout);
-
-/* User My files page */
-// File list view
-router.get(
-    '/:userId/files',
-    isAuthenticated,
-    idMatcher,
-    user_controller.user_files_get
-);
-
-// File details view
-router.get(
-    '/:userId/files/:fileId',
-    isAuthenticated,
-    idMatcher,
-    user_controller.user_fileDetails_get
-);
-
-// Folder view
-router.get(
-    '/:userId/files/folder/:folderId',
-    isAuthenticated,
-    idMatcher,
-    user_controller.user_folder_get
-);
 
 module.exports = router;
