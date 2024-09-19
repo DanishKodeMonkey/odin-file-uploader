@@ -28,4 +28,7 @@ router.get(
     files_controller.user_folder_get
 );
 
+// DOWNLOAD
+router.get('/:fileId/download', files_controller.user_fileDownload_get);
+
 module.exports = router;

@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const { filesQueries } = require('../db/prismaQueries');
 const formatFileSize = require('../utils/helpers');
+const path = require('path');
+const fs = require('fs');
 
 /* User "My files" page */
 /* My files page */
@@ -89,5 +91,42 @@ exports.user_fileDetails_get = asyncHandler(async (req, res) => {
             file: file,
             error: [{ msg: 'Error retrieving file...' }],
         });
+    }
+});
+
+exports.user_fileDownload_get = asyncHandler(async (req, res) => {
+    console.log('Starting download operation');
+    try {
+        const fileId = parseInt(req.params.fileId, 10);
+        console.log('File ID: ', fileId);
+
+        // fetch file metadata from database
+        const file = await filesQueries.getFileByFileId(fileId);
+
+        if (!file) {
+            return res.status(404).json({ msg: 'File not found' });
+        }
+        console.log('File: ', file);
+        const filePath = path.resolve(
+            __dirname,
+            '../../public/uploads',
+            file.filePath
+        );
+        console.log('Filepath: ', filePath);
+
+        // Check if file exists on server file system
+        if (fs.existsSync(filePath)) {
+            res.download(filePath, file.title, (err) => {
+                if (err) {
+                    console.error('Error sending file: ', err);
+                    res.status(500).json({ msg: 'Failed to download file' });
+                }
+            });
+        } else {
+            res.status(404).json({ msg: 'File not found on server' });
+        }
+    } catch (err) {
+        console.error('Error fetching file: ', err);
+        res.status(500).json({ msg: 'Failed to download file' });
     }
 });
