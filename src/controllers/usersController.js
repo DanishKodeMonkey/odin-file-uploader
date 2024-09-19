@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const passport = require('../config/passport');
 const { body, validationResult } = require('express-validator');
 const { userQueries, uploadQueries } = require('../db/prismaQueries');
+const formatFileSize = require('../utils/helpers');
 
 // User validation
 const validateUserSignup = [
@@ -231,6 +232,9 @@ exports.user_fileDetails_get = asyncHandler(async (req, res) => {
 
     try {
         const file = await uploadQueries.getFileByFileId(fileId);
+
+        // Format file size using helper utility
+        file.size = formatFileSize(file.size);
 
         console.log(file);
         res.render('pages/fileDetailsView', {

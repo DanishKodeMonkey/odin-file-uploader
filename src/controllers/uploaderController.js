@@ -36,6 +36,7 @@ exports.file_upload_post = [
             const newFile = await uploadQueries.createFile({
                 title: fileTitle,
                 filePath: filePath,
+                size: req.file.size,
                 userId: res.locals.currentUser.id, // associate with uploader id
                 folderId: folderId,
             });

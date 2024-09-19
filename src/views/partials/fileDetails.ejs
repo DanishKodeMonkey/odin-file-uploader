@@ -4,4 +4,11 @@
     <h4><%= file.filePath %></h4>
     <h4>Uploaded by: </h4>
     <h5><%= file.User.username %></h5>
+    <h5>Size:</h5>
+    <h5><%= file.size %></h5>
+    <h5>Uploaded on:</h5>
+    <h5><%= new Date(file.uploadTime).toLocaleString() %></h5>
+    <h5>Updated on: </h5>
+    <h5><%= new Date (file.updatedAt).toLocaleString() %></h5>
+
 </div>
