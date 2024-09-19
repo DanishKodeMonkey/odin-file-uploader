@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const upload = require('../config/multer');
 const { uploadQueries } = require('../db/prismaQueries');
+const fs = require('fs');
+const path = require('path');
 
 /* File */
 exports.file_upload_post = [
@@ -57,8 +59,7 @@ exports.file_delete_post = asyncHandler(async (req, res) => {
 
     console.warn(`REACHED FILE DELETE POST FOR USER ${userId}, FILE ${fileId}`);
     // import file services
-    const fs = require('fs');
-    const path = require('path');
+
     try {
         // fetch file details from database
         const file = await uploadQueries.getFileByFileId(fileId);
@@ -103,8 +104,6 @@ exports.folder_create_post = asyncHandler(async (req, res) => {
     const { name, parentFolderPath } = req.body;
 
     // create directory on server
-    const fs = require('fs');
-    const path = require('path');
     // User directory on server
     const userDir = path.join(
         __dirname,
@@ -147,8 +146,6 @@ exports.folder_create_post = asyncHandler(async (req, res) => {
 // Delete folder
 exports.folder_delete_post = asyncHandler(async (req, res) => {
     const { folderId, userId } = req.params;
-    const fs = require('fs');
-    const path = require('path');
 
     try {
         // Fetch folder and files

@@ -1,8 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const passport = require('../config/passport');
 const { body, validationResult } = require('express-validator');
-const { userQueries, uploadQueries } = require('../db/prismaQueries');
-const formatFileSize = require('../utils/helpers');
+const { userQueries } = require('../db/prismaQueries');
 
 // User validation
 const validateUserSignup = [
