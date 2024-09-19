@@ -21,6 +21,7 @@ router.post('/login', user_controller.user_login_post);
 router.get('/logout', user_controller.user_logout);
 
 /* User My files page */
+// File list view
 router.get(
     '/:userId/files',
     isAuthenticated,
@@ -28,10 +29,20 @@ router.get(
     user_controller.user_files_get
 );
 
+// File details view
+router.get(
+    '/:userId/files/:fileId',
+    isAuthenticated,
+    idMatcher,
+    user_controller.user_fileDetails_get
+);
+
+// Folder view
 router.get(
     '/:userId/files/folder/:folderId',
     isAuthenticated,
     idMatcher,
     user_controller.user_folder_get
 );
+
 module.exports = router;

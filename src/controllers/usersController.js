@@ -224,3 +224,30 @@ exports.user_folder_get = asyncHandler(async (req, res) => {
         });
     }
 });
+
+exports.user_fileDetails_get = asyncHandler(async (req, res) => {
+    console.log('Hit file details view GET for, ', req.params.fileId);
+    const fileId = req.params.fileId;
+
+    try {
+        const file = await uploadQueries.getFileByFileId(fileId);
+
+        console.log(file);
+        res.render('pages/fileDetailsView', {
+            title: 'File details view',
+            description: 'File details view',
+            user: res.locals.currentUser,
+            file: file,
+            error: null,
+        });
+    } catch (err) {
+        console.error('Error retrieving file...', err);
+        res.render('pages/fileDetailsView', {
+            title: 'File details view',
+            description: 'File details view',
+            user: res.locals.currentUser,
+            file: file,
+            error: [{ msg: 'Error retrieving file...' }],
+        });
+    }
+});
