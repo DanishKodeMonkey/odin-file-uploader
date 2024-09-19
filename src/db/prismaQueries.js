@@ -68,11 +68,12 @@ const userQueries = {
 const uploadQueries = {
     createFile: async (fileData) => {
         try {
-            const { title, filePath, userId, folderId } = fileData;
+            const { title, filePath, userId, folderId, size } = fileData;
             const newFile = await prisma.file.create({
                 data: {
                     title: title,
                     filePath: filePath,
+                    size: size,
                     userId: userId,
                     folderId: folderId || null,
                 },
@@ -132,6 +133,7 @@ const uploadQueries = {
         try {
             return await prisma.file.findUnique({
                 where: { id: parseInt(fileId, 10) },
+                include: { User: true },
             });
         } catch (err) {
             console.error('Error retrieving file by ID: ', err);
