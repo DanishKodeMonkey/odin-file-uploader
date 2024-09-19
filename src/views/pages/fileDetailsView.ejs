@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../partials/head') %>
+    <body>
+        <%- include('../partials/header') %>
+        <h1>File details: </h1>
+        <a href="/user/<%= user.id %>/files">Back to My files</a>
+        <% if (!file && !error) { %>
+         <p>Loading file details...</p>
+        <% } %>
+        <% if (file) { %>
+            <%- include('../partials/fileDetails.ejs', file) %>
+        <%} else if(error && error.length > 0){ %>
+            <%- include('../partials/error.ejs', {errors: error}) %>
+        <% } %>
+
+        <%- include('../partials/footer.ejs') %>
+    </body>
+</html>
