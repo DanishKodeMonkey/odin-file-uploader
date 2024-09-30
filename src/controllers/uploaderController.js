@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const upload = require('../config/multer');
 const { uploadQueries } = require('../db/prismaQueries');
+const supabase = require('../config/supabaseClient');
 const fs = require('fs');
 const path = require('path');
 
@@ -25,16 +26,38 @@ exports.file_upload_post = [
             }
         }
 
+        // Generate filename
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 150);
+        const generatedFilename = `${uniqueSuffix}-${req.file.originalname}`;
+
         // Save file details to database
         try {
             const filePath = folderName
-                ? `${res.locals.currentUser.username}/${folderName}/${req.file.filename}`
-                : `${res.locals.currentUser.username}/default/${req.file.filename}`;
+                ? `${res.locals.currentUser.username}/${folderName}/${generatedFilename}`
+                : `${res.locals.currentUser.username}/default/${generatedFilename}`;
             console.log('Saved filePath: ', filePath);
-            const fileTitle = req.file.originalname;
-            console.log('Saved fileTitle', fileTitle);
+
+            // upload to supabase storage
+            const { data, error: uploadError } = await supabase.storage
+                .from(process.env.SUPABASE_BUCKET)
+                .upload(filePath, req.file.buffer, {
+                    contentType: req.file.mimetype,
+                });
+
+            if (uploadError) {
+                console.error(
+                    'Error uploading file to supabase: ',
+                    uploadError
+                );
+                return res
+                    .status(500)
+                    .json({ msg: 'Failed to upload file to supabase' });
+            }
+
+            console.log('File uploaded successfully to superbase storage');
 
             // use locals currentuser userId to tie file to profile in database
+            const fileTitle = req.file.originalname;
             const newFile = await uploadQueries.createFile({
                 title: fileTitle,
                 filePath: filePath,
@@ -42,7 +65,7 @@ exports.file_upload_post = [
                 userId: res.locals.currentUser.id, // associate with uploader id
                 folderId: folderId,
             });
-            console.log('File uploaded successfully: ', req.file);
+            console.log('File uploaded successfully: ', newFile);
             console.log('Database record created: ', newFile);
 
             res.redirect(`/user/${res.locals.currentUser.id}/files`);
