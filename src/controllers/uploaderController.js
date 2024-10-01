@@ -1,5 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const upload = require('../config/multer');
+const { PassThrough } = require('stream');
+const cloudinary = require('../config/cloudinary');
 const { uploadQueries } = require('../db/prismaQueries');
 const fs = require('fs');
 const path = require('path');
@@ -11,7 +13,14 @@ exports.file_upload_post = [
         if (!req.file) {
             return res.status(400).json({ msg: 'please select a file' });
         }
+
+        // Generate filename
         const file = req.file;
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 150);
+        const generatedFilename = `${uniqueSuffix}-${file.originalname}`;
+        const fileBuffer = file.buffer;
+
+        const userId = res.locals.currentUser.id;
 
         let folderId = null; //default null folderId if no foldername is provided
         let folderName = null;
@@ -25,6 +34,25 @@ exports.file_upload_post = [
                 folderName = folder.name;
             }
         }
+        const bufferStream = new PassThrough();
+        // save file to cloudinary
+        const uploadResult = await cloudinary.uploader.upload_stream(
+            { folder: folderName ? folderName : 'default' },
+            (error, result) => {
+                if (error) {
+                    console.error('Cloudinary upload error: ', error);
+                    return res.status(500).json({
+                        success: false,
+                        message: 'File upload failed',
+                    });
+                }
+                return res.redirect('/');
+            }
+        );
+        // Stream buffer to cloudinary
+
+        bufferStream.end(file.buffer);
+        bufferStream.pipe(uploadResult);
 
         // Save file details to database
         try {
