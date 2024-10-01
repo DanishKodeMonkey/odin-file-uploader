@@ -9,8 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Users {
@@ -24,6 +25,7 @@ model Users {
 
 model File {
   id         Int      @id @default(autoincrement())
+  public_id  String?
   title      String
   filePath   String
   size       Int
