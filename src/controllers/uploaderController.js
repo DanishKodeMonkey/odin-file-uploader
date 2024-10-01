@@ -11,6 +11,7 @@ exports.file_upload_post = [
         if (!req.file) {
             return res.status(400).json({ msg: 'please select a file' });
         }
+        const file = req.file;
 
         let folderId = null; //default null folderId if no foldername is provided
         let folderName = null;
