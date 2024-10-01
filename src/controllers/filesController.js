@@ -1,4 +1,5 @@
 const asyncHandler = require('express-async-handler');
+const cloudinary = require('../config/cloudinary');
 const { filesQueries } = require('../db/prismaQueries');
 const formatFileSize = require('../utils/helpers');
 const path = require('path');
@@ -128,5 +129,39 @@ exports.user_fileDownload_get = asyncHandler(async (req, res) => {
     } catch (err) {
         console.error('Error fetching file: ', err);
         res.status(500).json({ msg: 'Failed to download file' });
+    }
+});
+
+exports.file_delete_post = asyncHandler(async (req, res) => {
+    // extract nessecary data for querying
+    const { userId, fileId } = req.params;
+
+    console.warn(`REACHED FILE DELETE POST FOR USER ${userId}, FILE ${fileId}`);
+    // import file services
+
+    try {
+        // fetch file details from database
+        const file = await filesQueries.getFileByFileId(fileId);
+        console.log('Starting operation against ', file.filePath);
+        // Ensure file exists and belongs to authenticated user
+        if (!file || file.userId !== parseInt(userId, 10)) {
+            return res
+                .status(403)
+                .json({ msg: 'Unauthorized or file not found.' });
+        }
+
+        // Ready to remove file
+
+        console.log('Trying to delete filePath: ', file.public_id);
+        const cloudinaryPublicId = file.public_id;
+        await cloudinary.uploader.destroy(cloudinaryPublicId);
+
+        // Delete file references from DB
+        await filesQueries.deleteFileById(fileId, userId);
+
+        res.redirect(`/user/${userId}/files`);
+    } catch (err) {
+        console.error('Error deleting file: ', err);
+        res.status(500).json({ msg: 'Error deleting file' });
     }
 });
