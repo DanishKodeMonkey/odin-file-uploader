@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler');
 const upload = require('../config/multer');
-const { PassThrough } = require('stream');
 const cloudinary = require('../config/cloudinary');
 const { uploadQueries } = require('../db/prismaQueries');
 const fs = require('fs');
@@ -19,6 +18,7 @@ exports.file_upload_post = [
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 150);
         const generatedFilename = `${uniqueSuffix}-${file.originalname}`;
         const fileBuffer = file.buffer;
+        const fileMimeType = file.mimetype;
 
         const userId = res.locals.currentUser.id;
 
@@ -34,40 +34,35 @@ exports.file_upload_post = [
                 folderName = folder.name;
             }
         }
-        const bufferStream = new PassThrough();
-        // save file to cloudinary
-        const uploadResult = await cloudinary.uploader.upload_stream(
-            { folder: folderName ? folderName : 'default' },
-            (error, result) => {
-                if (error) {
-                    console.error('Cloudinary upload error: ', error);
-                    return res.status(500).json({
-                        success: false,
-                        message: 'File upload failed',
-                    });
-                }
-                return res.redirect('/');
-            }
-        );
-        // Stream buffer to cloudinary
 
-        bufferStream.end(file.buffer);
-        bufferStream.pipe(uploadResult);
-
-        // Save file details to database
         try {
+            // generate base64 encoding of file
+            const base64EncodedImage =
+                Buffer.from(fileBuffer).toString('base64');
+            const dataUri = `data:${fileMimeType};base64,${base64EncodedImage}`;
+
+            // save file to cloudinary
+            const uploadResult = await cloudinary.uploader.upload(dataUri, {
+                public_id: generatedFilename,
+                folder: folderName ? folderName : 'default',
+            });
+
+            console.log(uploadResult.public_id);
+
+            // Save file details to database
             const filePath = folderName
-                ? `${res.locals.currentUser.username}/${folderName}/${req.file.filename}`
-                : `${res.locals.currentUser.username}/default/${req.file.filename}`;
+                ? `${res.locals.currentUser.username}/${folderName}/${file.originalname}`
+                : `${res.locals.currentUser.username}/default/${file.originalname}`;
             console.log('Saved filePath: ', filePath);
             const fileTitle = req.file.originalname;
             console.log('Saved fileTitle', fileTitle);
 
             // use locals currentuser userId to tie file to profile in database
             const newFile = await uploadQueries.createFile({
+                public_id: uploadResult.public_id,
                 title: fileTitle,
                 filePath: filePath,
-                size: req.file.size,
+                size: file.size,
                 userId: res.locals.currentUser.id, // associate with uploader id
                 folderId: folderId,
             });
@@ -81,49 +76,6 @@ exports.file_upload_post = [
         }
     }),
 ];
-
-exports.file_delete_post = asyncHandler(async (req, res) => {
-    // extract nessecary data for querying
-    const { userId, fileId } = req.params;
-
-    console.warn(`REACHED FILE DELETE POST FOR USER ${userId}, FILE ${fileId}`);
-    // import file services
-
-    try {
-        // fetch file details from database
-        const file = await uploadQueries.getFileByFileId(fileId);
-        console.log('Starting operation against ', file.filePath);
-        // Ensure file exists and belongs to authenticated user
-        if (!file || file.userId !== parseInt(userId, 10)) {
-            return res
-                .status(403)
-                .json({ msg: 'Unauthorized or file not found.' });
-        }
-
-        // Ready to remove file
-        const filePath = path.join(
-            __dirname,
-            '../../public/uploads',
-            file.filePath
-        );
-        console.log('Trying to delete filePath: ', filePath);
-        fs.unlink(filePath, (err) => {
-            if (err) {
-                console.error('Error deleting file from file system: ', err);
-                return res
-                    .status(500)
-                    .json({ msg: 'Error deleting file from server.' });
-            }
-        });
-        // Delete file references from DB
-        await uploadQueries.deleteFileById(fileId, userId);
-
-        res.redirect(`/user/${userId}/files`);
-    } catch (err) {
-        console.error('Error deleting file: ', err);
-        res.status(500).json({ msg: 'Error deleting file' });
-    }
-});
 
 /* Folders */
 
