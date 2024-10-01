@@ -68,9 +68,11 @@ const userQueries = {
 const uploadQueries = {
     createFile: async (fileData) => {
         try {
-            const { title, filePath, userId, folderId, size } = fileData;
+            const { public_id, title, filePath, userId, folderId, size } =
+                fileData;
             const newFile = await prisma.file.create({
                 data: {
+                    public_id: public_id,
                     title: title,
                     filePath: filePath,
                     size: size,
@@ -84,19 +86,7 @@ const uploadQueries = {
             throw new Error('Error creating file record');
         }
     },
-    deleteFileById: async (fileId, userId) => {
-        try {
-            return await prisma.file.delete({
-                where: {
-                    id: parseInt(fileId, 10),
-                    userId: parseInt(userId, 10),
-                },
-            });
-        } catch (err) {
-            console.error('Error deleting file from database: ', err);
-            throw new Error('Error deleting file');
-        }
-    },
+
     deleteFolderById: async (folderId, userId) => {
         return prisma.folder.delete({
             where: {
@@ -183,6 +173,19 @@ const filesQueries = {
         } catch (err) {
             console.error('Error retrieving folder by Id:', err);
             throw new Error('Error retrieving folder by ID');
+        }
+    },
+    deleteFileById: async (fileId, userId) => {
+        try {
+            return await prisma.file.delete({
+                where: {
+                    id: parseInt(fileId, 10),
+                    userId: parseInt(userId, 10),
+                },
+            });
+        } catch (err) {
+            console.error('Error deleting file from database: ', err);
+            throw new Error('Error deleting file');
         }
     },
 };
