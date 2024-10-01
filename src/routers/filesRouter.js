@@ -30,5 +30,7 @@ router.get(
 
 // DOWNLOAD
 router.get('/:fileId/download', files_controller.user_fileDownload_get);
+// DELETE
+router.post('/:fileId/delete', files_controller.file_delete_post);
 
 module.exports = router;

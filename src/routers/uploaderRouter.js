@@ -19,8 +19,7 @@ router.post(
 );
 
 /* Files */
-// Delete
-router.post('/:fileId/delete', uploader_controller.file_delete_post);
+
 // Create
 router.post('/:folderName?', uploader_controller.file_upload_post); // protected route
 
