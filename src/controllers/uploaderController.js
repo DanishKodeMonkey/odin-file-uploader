@@ -20,7 +20,7 @@ exports.file_upload_post = [
         const fileBuffer = file.buffer;
         const fileMimeType = file.mimetype;
 
-        const userId = res.locals.currentUser.id;
+        const userName = res.locals.currentUser.username;
 
         let folderId = null; //default null folderId if no foldername is provided
         let folderName = null;
@@ -44,7 +44,9 @@ exports.file_upload_post = [
             // save file to cloudinary
             const uploadResult = await cloudinary.uploader.upload(dataUri, {
                 public_id: generatedFilename,
-                folder: folderName ? folderName : 'default',
+                folder: folderName
+                    ? `${userName}/${folderName}`
+                    : `${userName}/default`,
             });
 
             console.log(uploadResult.public_id);
@@ -121,52 +123,5 @@ exports.folder_create_post = asyncHandler(async (req, res) => {
     } catch (err) {
         console.error('Error creating folder in database ', err);
         res.status(500).json({ error: 'Failed to create folder' });
-    }
-});
-
-// Delete folder
-exports.folder_delete_post = asyncHandler(async (req, res) => {
-    const { folderId, userId } = req.params;
-
-    try {
-        // Fetch folder and files
-        const folder = await uploadQueries.getFolderById(folderId);
-
-        if (!folder) {
-            return res.status(404).json({ msg: 'Folder not found' });
-        }
-
-        if (folder.usersId !== parseInt(userId, 10)) {
-            return res.status(403).json({ msg: 'Unauthorized action' });
-        }
-        const sysDir = path.join(__dirname, '../../public/uploads');
-        // Delete all files in the folder on server
-        for (const file of folder.files) {
-            const filePath = path.join(sysDir, file.filePath);
-            console.log('Deleting path on server: ', filePath);
-            // if file exists, delete.
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
-        }
-
-        // Delete all file references on db related to folder
-        await uploadQueries.deleteFileByFolderId(folderId, userId);
-
-        // Finally, delete folder
-        // Sysdrive folder
-        const folderDir = path.join(sysDir, folder.filePath);
-        console.log('Trying to delete folder: ', folderDir);
-        if (fs.existsSync(folderDir)) {
-            console.log('Folder found, deleting.');
-            fs.rmSync(folderDir, { recursive: true, force: true });
-        }
-        // db reference.
-        await uploadQueries.deleteFolderById(folderId, userId);
-
-        res.redirect(`/user/${userId}/files`);
-    } catch (err) {
-        console.error('Error deleting folder: ', err);
-        res.status(500).json({ msg: 'Error deleting folder' });
     }
 });
