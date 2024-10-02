@@ -17,7 +17,9 @@ exports.file_upload_post = [
         // Generate filename
         const file = req.file;
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 150);
-        const generatedFilename = `${uniqueSuffix}-${file.originalname}`;
+        const generatedFilename = `${uniqueSuffix}-${
+            path.parse(file.originalname).name
+        }`;
         const fileBuffer = file.buffer;
         const fileMimeType = file.mimetype;
 
@@ -50,7 +52,7 @@ exports.file_upload_post = [
                     : `${userName}/default`,
             });
 
-            console.log(uploadResult.public_id);
+            console.log(uploadResult.url);
 
             // Save file details to database
             const filePath = folderName
@@ -65,6 +67,7 @@ exports.file_upload_post = [
                 public_id: uploadResult.public_id,
                 resource_type: uploadResult.resource_type,
                 type: uploadResult.type,
+                url: uploadResult.url,
                 title: fileTitle,
                 filePath: filePath,
                 size: file.size,
