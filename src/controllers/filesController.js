@@ -108,24 +108,18 @@ exports.user_fileDownload_get = asyncHandler(async (req, res) => {
             return res.status(404).json({ msg: 'File not found' });
         }
         console.log('File: ', file);
-        const filePath = path.resolve(
-            __dirname,
-            '../../public/uploads',
-            file.filePath
-        );
-        console.log('Filepath: ', filePath);
 
-        // Check if file exists on server file system
-        if (fs.existsSync(filePath)) {
-            res.download(filePath, file.title, (err) => {
-                if (err) {
-                    console.error('Error sending file: ', err);
-                    res.status(500).json({ msg: 'Failed to download file' });
-                }
-            });
-        } else {
-            res.status(404).json({ msg: 'File not found on server' });
-        }
+        // retrieve files cloudinary public_id
+        const { public_id, resource_type, type } = file;
+
+        // Download file using Cloudinary's API
+        const downloadUrl = cloudinary.url(public_id, {
+            resource_type: resource_type,
+            type: type,
+            flags: 'attachment', // Force download
+        });
+
+        res.redirect(downloadUrl);
     } catch (err) {
         console.error('Error fetching file: ', err);
         res.status(500).json({ msg: 'Failed to download file' });
