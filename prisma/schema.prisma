@@ -24,17 +24,19 @@ model Users {
 }
 
 model File {
-  id         Int      @id @default(autoincrement())
-  public_id  String?
-  title      String
-  filePath   String
-  size       Int
-  uploadTime DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  User       Users    @relation(fields: [userId], references: [id])
-  userId     Int
-  Folder     Folder?  @relation(fields: [folderId], references: [id])
-  folderId   Int?
+  id            Int      @id @default(autoincrement())
+  public_id     String?
+  resource_type String?
+  type          String?
+  title         String
+  filePath      String
+  size          Int
+  uploadTime    DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  User          Users    @relation(fields: [userId], references: [id])
+  userId        Int
+  Folder        Folder?  @relation(fields: [folderId], references: [id])
+  folderId      Int?
 }
 
 model Folder {

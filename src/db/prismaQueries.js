@@ -68,11 +68,21 @@ const userQueries = {
 const uploadQueries = {
     createFile: async (fileData) => {
         try {
-            const { public_id, title, filePath, userId, folderId, size } =
-                fileData;
+            const {
+                public_id,
+                resource_type,
+                type,
+                title,
+                filePath,
+                userId,
+                folderId,
+                size,
+            } = fileData;
             const newFile = await prisma.file.create({
                 data: {
                     public_id: public_id,
+                    resource_type: resource_type,
+                    type: type,
                     title: title,
                     filePath: filePath,
                     size: size,

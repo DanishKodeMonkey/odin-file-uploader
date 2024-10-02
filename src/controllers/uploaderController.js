@@ -63,6 +63,8 @@ exports.file_upload_post = [
             // use locals currentuser userId to tie file to profile in database
             const newFile = await uploadQueries.createFile({
                 public_id: uploadResult.public_id,
+                resource_type: uploadResult.resource_type,
+                type: uploadResult.type,
                 title: fileTitle,
                 filePath: filePath,
                 size: file.size,
