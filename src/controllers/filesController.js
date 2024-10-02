@@ -132,6 +132,8 @@ exports.user_fileDownload_get = asyncHandler(async (req, res) => {
     }
 });
 
+// Delete file
+
 exports.file_delete_post = asyncHandler(async (req, res) => {
     // extract nessecary data for querying
     const { userId, fileId } = req.params;
@@ -163,5 +165,52 @@ exports.file_delete_post = asyncHandler(async (req, res) => {
     } catch (err) {
         console.error('Error deleting file: ', err);
         res.status(500).json({ msg: 'Error deleting file' });
+    }
+});
+
+// Delete folder WITH FILES
+exports.folder_delete_post = asyncHandler(async (req, res) => {
+    const { folderId, userId } = req.params;
+
+    try {
+        // Fetch folder and files
+        const folder = await filesQueries.getFolderById(folderId);
+
+        if (!folder) {
+            return res.status(404).json({ msg: 'Folder not found' });
+        }
+
+        if (folder.usersId !== parseInt(userId, 10)) {
+            return res.status(403).json({ msg: 'Unauthorized action' });
+        }
+        // delete all files in the folder from cloudinary
+        for (const file of folder.files) {
+            const publicId = file.public_id;
+            console.log('Delete file in folder ', publicId);
+            await cloudinary.uploader.destroy(publicId, { invalidate: true });
+        }
+
+        const folderPath = folder.filePath;
+        console.log('Deleting folder from cloudinary: ', folderPath);
+        try {
+            await cloudinary.api.delete_folder(folderPath);
+        } catch (err) {
+            console.error('Error deleting folder from cloudinary', err);
+            return res
+                .status(500)
+                .json({ msg: 'Failed to delete the folder from cloudinary' });
+        }
+
+        // Delete all file references on db related to folder
+        await filesQueries.deleteFileByFolderId(folderId, userId);
+
+        // Finally, delete folder from DB
+
+        await filesQueries.deleteFolderById(folderId, userId);
+
+        res.redirect(`/user/${userId}/files`);
+    } catch (err) {
+        console.error('Error deleting folder: ', err);
+        res.status(500).json({ msg: 'Error deleting folder' });
     }
 });
