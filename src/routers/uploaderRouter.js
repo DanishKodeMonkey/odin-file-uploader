@@ -12,12 +12,6 @@ router.use(idMatcher);
 // Create new folder
 router.post('/createFolder', uploader_controller.folder_create_post);
 
-// Delete folder
-router.post(
-    '/folders/:folderId/delete',
-    uploader_controller.folder_delete_post
-);
-
 /* Files */
 
 // Create

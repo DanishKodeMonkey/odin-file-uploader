@@ -28,9 +28,12 @@ router.get(
     files_controller.user_folder_get
 );
 
-// DOWNLOAD
+// Delete folder
+router.post('/folders/:folderId/delete', files_controller.folder_delete_post);
+
+// DOWNLOAD file
 router.get('/:fileId/download', files_controller.user_fileDownload_get);
-// DELETE
+// DELETE file
 router.post('/:fileId/delete', files_controller.file_delete_post);
 
 module.exports = router;
