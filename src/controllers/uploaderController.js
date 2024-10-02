@@ -4,6 +4,7 @@ const cloudinary = require('../config/cloudinary');
 const { uploadQueries } = require('../db/prismaQueries');
 const fs = require('fs');
 const path = require('path');
+const { folder } = require('../db/prismaClient');
 
 /* File */
 exports.file_upload_post = [
@@ -88,11 +89,8 @@ exports.folder_create_post = asyncHandler(async (req, res) => {
 
     // create directory on server
     // User directory on server
-    const userDir = path.join(
-        __dirname,
-        '../../public/uploads',
-        req.user.username
-    );
+    const userDir = res.locals.currentUser.username;
+
     // Generate user path for relative path for database
     const userPath = parentFolderPath
         ? `${parentFolderPath}/${name}`
@@ -102,22 +100,18 @@ exports.folder_create_post = asyncHandler(async (req, res) => {
     const folderPath = path.join(userDir, userPath);
 
     // user directory not found
-    if (!fs.existsSync(userDir)) {
-        fs.mkdirSync(userDir, { recursive: true });
-    }
-    // Folder not found
-    if (!fs.existsSync(folderPath)) {
-        // Create parent folder if needed (recursive)
-        fs.mkdirSync(folderPath, { recursive: true });
-    } else {
-        return res.status(400).json({ error: 'Folder already exists' });
+    try {
+        await cloudinary.api.create_folder(folderPath);
+    } catch (err) {
+        console.error('ERror creating folder on cloudinary');
+        throw new Error('Failed to create folder on cloudinary');
     }
 
     try {
         const newFolder = await uploadQueries.createFolder({
             name: name,
             userId: res.locals.currentUser.id,
-            filePath: `${req.user.username}/${userPath}`,
+            filePath: folderPath,
         });
         res.redirect(`/user/${res.locals.currentUser.id}/files`);
     } catch (err) {
