@@ -28,6 +28,7 @@ model File {
   public_id     String?
   resource_type String?
   type          String?
+  url           String?
   title         String
   filePath      String
   size          Int
