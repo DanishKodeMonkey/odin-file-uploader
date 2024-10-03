@@ -1,18 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
     <%- include('../partials/head') %>
-    <body>
+    <body class="d-flex flex-column min-vh-100">
         <%- include('../partials/header') %>
-        <h1>File details: </h1>
-        <a href="/user/<%= user.id %>/files">Back to My files</a>
-        <% if (!file && !error) { %>
-         <p>Loading file details...</p>
-        <% } %>
-        <% if (file) { %>
-            <%- include('../partials/fileDetails.ejs', file) %>
-        <%} else if(error && error.length > 0){ %>
-            <%- include('../partials/error.ejs', {errors: error}) %>
-        <% } %>
+        
+        <div class="container mt-4">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>File Details</h1>
+                <a href="/user/<%= user.id %>/files" class="btn btn-secondary">Back to My Files</a>
+            </div>
+
+            <!-- Loading or Error Messages -->
+            <% if (!file && !error) { %>
+                <div class="alert alert-info" role="alert">
+                    Loading file details...
+                </div>
+            <% } %>
+
+            <!-- File Details Section -->
+            <% if (file) { %>
+                <div class="card">
+                    <div class="card-body">
+                        <%- include('../partials/fileDetails.ejs', file) %>
+                    </div>
+                </div>
+            <% } else if (error && error.length > 0) { %>
+                <%- include('../partials/error.ejs', {errors: error}) %>
+            <% } %>
+        </div>
 
         <%- include('../partials/footer.ejs') %>
     </body>

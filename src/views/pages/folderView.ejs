@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
     <%- include('../partials/head') %>
-    <body>
+    <body class="d-flex flex-column min-vh-100">
         <%- include('../partials/header') %>
-        <h1>Contents of <%= folders.name %></h1>
-        <a href="/user/<%= user.id %>/files">Back to My files</a>
-        <% if ((files && files.length >= 0) || (files && files.length >= 0)) { %>
-            <%- include('../partials/fileExplorer.ejs', {files: files, folders: [], path: folders.filePath, folderView: true}) %>
-        <%} else if(error && error.length > 0){ %>
-            <%- include('../partials/error.ejs', {errors: err}) %>
-        <% } %>
 
-        
-        <%- include('../partials/_fileUploadModal', {folderName: folders.name}) %>
+        <div class="container mt-4">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Contents of <%= folders.name %></h1>
+                <a href="/user/<%= user.id %>/files" class="btn btn-secondary">Back to My Files</a>
+            </div>
+
+            <!-- Folder Content or Error Messages -->
+            <% if ((files && files.length >= 0) || (files && files.length >= 0)) { %>
+                <!-- Include File Explorer Partial -->
+                <%- include('../partials/fileExplorer.ejs', {files: files, folders: [], path: folders.filePath, folderView: true}) %>
+            <% } else if (error && error.length > 0) { %>
+                <!-- Display Errors -->
+                <%- include('../partials/error.ejs', {errors: err}) %>
+            <% } %>
+
+            <!-- File Upload Modal -->
+            <%- include('../partials/_fileUploadModal', {folderName: folders.name}) %>
+        </div>
 
         <%- include('../partials/footer.ejs') %>
     </body>
