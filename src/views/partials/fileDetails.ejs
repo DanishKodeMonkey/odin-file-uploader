@@ -1,16 +1,20 @@
-<div>
-    <h2><%= file.title %></h2>
-    <h3>Path: </h3>
-    <h4><%= file.filePath %></h4>
-    <h4>Uploaded by: </h4>
-    <h5><%= file.User.username %></h5>
-    <h5>Size:</h5>
-    <h5><%= file.size %></h5>
-    <h5>Uploaded on:</h5>
-    <h5><%= new Date(file.uploadTime).toLocaleString() %></h5>
-    <h5>Updated on: </h5>
-    <h5><%= new Date (file.updatedAt).toLocaleString() %></h5>
+<div class="file-details border p-4 rounded">
+    <h2 class="mb-3"><%= file.title %></h2>
+    
+    <h4>File Path:</h4>
+    <p class="mb-2"><%= file.filePath %></p>
+    
+    <h4>Uploaded by:</h4>
+    <p class="mb-2"><%= file.User.username %></p>
+    
+    <h4>Size:</h4>
+    <p class="mb-2"><%= file.size %></p>
+    
+    <h4>Uploaded on:</h4>
+    <p class="mb-2"><%= new Date(file.uploadTime).toLocaleString() %></p>
+    
+    <h4>Updated on:</h4>
+    <p class="mb-2"><%= new Date(file.updatedAt).toLocaleString() %></p>
 
-    <a class="btn btn-primary" href="<%= file.id %>/download">Download</a>
-
+    <a class="btn btn-primary" href="/user/<%= user.id %>/files/<%= file.id %>/download">Download</a>
 </div>
