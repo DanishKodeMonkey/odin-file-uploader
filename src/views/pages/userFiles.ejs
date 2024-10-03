@@ -1,22 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
     <%- include('../partials/head') %>
-    <body>
+    <body class="d-flex flex-column min-vh-100">
         <%- include('../partials/header') %>
-        <h1><%= user.username %>'s files.</h1>
-        <p>This is the files section of your user account.</p>
-        <p>Feel free to have a glimpse at the files that have been uploaded</p>
+        <main class="flex-grow-1">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col text-center">
+                        <h1 class="mb-4"><%= user.username %>'s files.</h1>
+                        <p class="lead">This is the files section of your user account.</p>
+                        <p class="lead">Feel free to have a glimpse at the files that have been uploaded</p>
+                        
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <% if ((files && files.length >= 0) || (files && files.length >= 0)) { %>
+                            <%- include('../partials/fileExplorer.ejs', {files: files, folders: folders, path: user.username, folderView: false}) %>
+                        <%} else if(error && error.length > 0){ %>
+                            <%- include('../partials/error.ejs', {errors: err}) %>
+                        <% } %>
+                        
+                        <%- include('../partials/_fileUploadModal', {folderName: ''}) %>
+                        <%- include('../partials/_folderCreationModal') %>
 
-        <% if ((files && files.length >= 0) || (files && files.length >= 0)) { %>
-            <%- include('../partials/fileExplorer.ejs', {files: files, folders: folders, path: user.username, folderView: false}) %>
-        <%} else if(error && error.length > 0){ %>
-            <%- include('../partials/error.ejs', {errors: err}) %>
-        <% } %>
-
-        
-        <%- include('../partials/_fileUploadModal', {folderName: ''}) %>
-        <%- include('../partials/_folderCreationModal') %>
-
+                    </div>
+                </div>
+            </div>
+        </main>
         <%- include('../partials/footer.ejs') %>
     </body>
 </html>

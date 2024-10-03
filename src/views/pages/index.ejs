@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
     <%- include('../partials/head') %>
-    <body>
+    <body class="d-flex flex-column min-vh-100">
         <%- include('../partials/header') %>
-        <h1>Welcome <%= user ? user.username : 'Guest' %>!</h1>
-        <p>This is the home section of the file uploader</p>
-        <p>Feel free to have a glimpse at the files that have been uploaded</p>
-        <% if (!user) { %>
-            <p>
-                To upload, <a href="/user/login">log in</a> or
-                <a href="/user/sign-up">sign up</a> today!
-            </p>
-        <% } %>
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-8 mx-auto text center">
+                    
+                    <h1 class="display-4">Welcome <%= user ? user.username : 'Guest' %>!</h1>
+                    <p class="lead mt-3">This is the home section of the file uploader</p>
+                    <p class="text-muted">Feel free to have a glimpse at the files that have been uploaded</p>
+                    <% if (!user) { %>
+                        <p >
+                            To upload 
+                            <a class="btn btn-primary btn-lg mx-2" href="/user/login">log in</a> or
+                            <a class="btn btn-success btn-lg mx-2" href="/user/sign-up">sign up</a> today!
+                        </p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
 
 
         <%- include('../partials/footer.ejs') %>
