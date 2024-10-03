@@ -17,9 +17,7 @@ exports.file_upload_post = [
         // Generate filename
         const file = req.file;
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 150);
-        const generatedFilename = `${uniqueSuffix}-${
-            path.parse(file.originalname).name
-        }`;
+        const generatedFilename = `${uniqueSuffix}-${file.originalname}`;
         const fileBuffer = file.buffer;
         const fileMimeType = file.mimetype;
 
@@ -47,6 +45,7 @@ exports.file_upload_post = [
             // save file to cloudinary
             const uploadResult = await cloudinary.uploader.upload(dataUri, {
                 public_id: generatedFilename,
+                resource_type: 'raw',
                 folder: folderName
                     ? `${userName}/${folderName}`
                     : `${userName}/default`,

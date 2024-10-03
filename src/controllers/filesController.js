@@ -114,7 +114,7 @@ exports.user_fileDownload_get = asyncHandler(async (req, res) => {
 
         // Download file using Cloudinary's API
         const downloadUrl = cloudinary.url(public_id, {
-            resource_type: resource_type,
+            resource_type: resource_type || 'raw',
             type: type,
             flags: 'attachment', // Force download
         });
